@@ -265,6 +265,8 @@ export default function Lab1() {
                     Please
                     <a href="https://www.lipsum.com" id="wd-lipsum">click here</a>
                     to get dummy text<br/>
+                    Click <a href="https://github.com/Redpandaboss09/web-dev-hw" id="wd-github"> here</a>
+                    to look at the repo<br/>
                 </form>
             </div>
 
