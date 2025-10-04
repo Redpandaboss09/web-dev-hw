@@ -1,3 +1,4 @@
+'use client'
 
 import Link from "next/link";
 import {ListGroup, ListGroupItem} from "react-bootstrap";
