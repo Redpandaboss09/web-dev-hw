@@ -1,6 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import {
     Row,
     Col,
@@ -10,32 +12,78 @@ import {
     FormControl,
     FormSelect,
     FormCheck,
+    Alert,
 } from 'react-bootstrap';
 
+import { assignments } from '../../../../Database';
+
+type Assignment = {
+    _id: string;
+    title: string;
+    course: string;
+    description?: string;
+    points?: number;
+    dueISO?: string;
+    availableFromISO?: string;
+};
+
 export default function AssignmentEditor() {
+    const { cid, aid } = useParams<{ cid: string; aid: string }>();
+
+    const a = useMemo(() => {
+        return (assignments as Assignment[]).find(
+            (x) => String(x._id) === String(aid) && String(x.course) === String(cid)
+        );
+    }, [cid, aid]);
+
+    const toLocalInput = (iso?: string) => {
+        if (!iso) return '';
+        const d = new Date(iso);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const hh = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+    };
+
+    if (!a) {
+        return (
+            <div id="wd-assignments-editor" className="container-fluid">
+                <Alert variant="warning" className="mb-3">
+                    Assignment not found for course <b>{cid}</b> and id <b>{aid}</b>.
+                </Alert>
+                <Link href={`/Courses/${encodeURIComponent(String(cid))}/Assignments`}>
+                    <Button variant="secondary">Back to Assignments</Button>
+                </Link>
+            </div>
+        );
+    }
+
+    const defaultName = a.title ?? 'Untitled Assignment';
+    const defaultDesc =
+        a.description ??
+        `Provide your submission link or files here. Include any instructions relevant to this assignment.`;
+    const defaultPoints = a.points ?? 100;
+    const defaultDue = toLocalInput(a.dueISO) || '2025-05-13T23:59';
+    const defaultAvailableFrom = toLocalInput(a.availableFromISO) || '2025-05-06T00:00';
+
     return (
         <div id="wd-assignments-editor" className="container-fluid">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <h3 className="text-danger m-0">{defaultName}</h3>
+                <Link href={`/Courses/${encodeURIComponent(String(cid))}/Assignments`}>
+                    <Button variant="outline-secondary" size="sm">Back to Assignments</Button>
+                </Link>
+            </div>
+
             <FormGroup className="mb-3" controlId="wd-name">
                 <FormLabel>Assignment Name</FormLabel>
-                <FormControl defaultValue="A1" />
+                <FormControl defaultValue={defaultName} />
             </FormGroup>
-            <FormGroup className="mb-4" controlId="wd-description">
-                <FormControl
-                    as="textarea"
-                    rows={8}
-                    defaultValue={`The assignment is available online
 
-                    Submit a link to the landing page of your Web application running on Netlify.
-                    
-                    The landing page should include the following:
-                      • Your full name and section
-                      • Links to each of the lab assignments
-                      • Link to the Kanbas application
-                      • Links to all relevant source code repositories
-                    
-                    The Kanbas application should include a link to navigate back to the landing page.`
-                }
-                />
+            <FormGroup className="mb-4" controlId="wd-description">
+                <FormControl as="textarea" rows={8} defaultValue={defaultDesc} />
             </FormGroup>
 
             <Row className="align-items-center mb-3">
@@ -43,7 +91,7 @@ export default function AssignmentEditor() {
                     <FormLabel htmlFor="wd-points" className="mb-0">Points</FormLabel>
                 </Col>
                 <Col sm={8}>
-                    <FormControl id="wd-points" type="number" defaultValue={100} style={{ maxWidth: 240 }} />
+                    <FormControl id="wd-points" type="number" defaultValue={defaultPoints} style={{ maxWidth: 240 }} />
                 </Col>
             </Row>
 
@@ -105,14 +153,14 @@ export default function AssignmentEditor() {
 
                         <FormGroup className="mb-3" controlId="wd-due-date">
                             <FormLabel className="d-block">Due</FormLabel>
-                            <FormControl type="datetime-local" defaultValue="2024-05-13T23:59" style={{ maxWidth: 320 }} />
+                            <FormControl type="datetime-local" defaultValue={defaultDue} style={{ maxWidth: 320 }} />
                         </FormGroup>
 
                         <Row className="g-3">
                             <Col>
                                 <FormGroup controlId="wd-available-from">
                                     <FormLabel className="d-block">Available from</FormLabel>
-                                    <FormControl type="datetime-local" defaultValue="2024-05-06T00:00" />
+                                    <FormControl type="datetime-local" defaultValue={defaultAvailableFrom} />
                                 </FormGroup>
                             </Col>
                             <Col>
