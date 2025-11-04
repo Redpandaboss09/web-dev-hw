@@ -6,7 +6,6 @@ import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {ListGroup, ListGroupItem} from "react-bootstrap";
-
 export default function KambazNavigation() {
     const pathname = usePathname();
     const links = [
@@ -31,7 +30,7 @@ export default function KambazNavigation() {
                 Account
             </ListGroupItem>
             {links.map((link) => (
-                <ListGroupItem key={link.path} as={Link} href={link.path}
+                <ListGroupItem key={`${link.label}:${link.path}`} as={Link} href={link.path}
                                className={`bg-black text-center border-0
               ${pathname.includes(link.label) ? "text-danger bg-white" : "text-white bg-black"}`}>
                     {link.icon({ className: "fs-1 text-danger"})}

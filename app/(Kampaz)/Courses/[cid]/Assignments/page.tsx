@@ -1,27 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { Row, Col, Card, ListGroup, Button, Form, Badge, ListGroupItem } from "react-bootstrap";
+import { useParams, useRouter } from "next/navigation";
+import { Row, Col, Card, ListGroup, Button, Form, Badge, ListGroupItem, Modal } from "react-bootstrap";
 import { RxDragHandleDots2 } from "react-icons/rx";
-import { FaFileAlt, FaCheckCircle } from "react-icons/fa";
+import { FaFileAlt, FaCheckCircle, FaTrash } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
-
-import { assignments } from "../../../Database";
-
-type Assignment = {
-    _id: string;
-    title: string;
-    course: string;
-};
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../store";
+import { deleteAssignment } from "./reducer";
+import { useState } from "react";
 
 export default function Assignments() {
     const { cid } = useParams<{ cid: string }>();
+    const router = useRouter();
     const encodedCid = encodeURIComponent(String(cid));
+    const dispatch = useDispatch();
+    const { assignments } = useSelector((s: RootState) => s.assignmentReducer);
+    const courseAssignments = assignments.filter((a) => String(a.course) === String(cid));
 
-    const courseAssignments = (assignments as Assignment[]).filter(
-        (a) => String(a.course) === String(cid)
-    );
+    const [confirmId, setConfirmId] = useState<string | null>(null);
 
     return (
         <div id="wd-assignments" className="container-fluid">
@@ -30,7 +28,13 @@ export default function Assignments() {
                     <div className="d-flex align-items-center gap-2">
                         <Form.Control id="wd-search-assignment" placeholder="Search" className="flex-grow-1" />
                         <Button id="wd-add-assignment-group" variant="secondary">+ Group</Button>
-                        <Button id="wd-add-assignment" variant="danger">+ Assignment</Button>
+                        <Button
+                            id="wd-add-assignment"
+                            variant="danger"
+                            onClick={() => router.push(`/Courses/${encodedCid}/Assignments/new`)}
+                        >
+                            + Assignment
+                        </Button>
                     </div>
 
                     <Card className="mt-3">
@@ -63,13 +67,19 @@ export default function Assignments() {
                                                     >
                                                         {a.title}
                                                     </Link>
-                                                    <div className="small text-muted mt-1">
-                                                        Multiple Modules
-                                                    </div>
+                                                    <div className="small text-muted mt-1">Multiple Modules</div>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center gap-3">
                                                 <FaCheckCircle className="text-success" />
+                                                <Button
+                                                    variant="outline-danger"
+                                                    size="sm"
+                                                    aria-label={`Delete ${a.title}`}
+                                                    onClick={() => setConfirmId(a._id)}
+                                                >
+                                                    <FaTrash />
+                                                </Button>
                                                 <BsThreeDotsVertical className="text-muted" />
                                             </div>
                                         </div>
@@ -80,6 +90,27 @@ export default function Assignments() {
                     </Card>
                 </Col>
             </Row>
+
+            <Modal show={!!confirmId} onHide={() => setConfirmId(null)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Remove assignment?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to remove this assignment? This action can’t be undone.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setConfirmId(null)}>Cancel</Button>
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            if (confirmId) dispatch(deleteAssignment(confirmId));
+                            setConfirmId(null);
+                        }}
+                    >
+                        Yes, remove
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }

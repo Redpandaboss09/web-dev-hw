@@ -17,6 +17,10 @@ export default function Labs() {
                     <Link href="/Labs/lab3" id="wd-lab3-link">
                         Lab 3: JavaScript Fundamentals </Link>
                 </li>
+                <li>
+                    <Link href="/Labs/lab4" id="wd-lab4-link">
+                        Lab 4: States </Link>
+                </li>
             </ul>
         </div>
     );}
