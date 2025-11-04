@@ -11,18 +11,7 @@ import ModulesControls from "./ModulesControls";
 import LessonControlButtons from "./LessonControlButtons";
 import {FormControl, ListGroup, ListGroupItem} from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
-import { v4 as uuidv4 } from "uuid";
 import ModuleControlButtons from "./ModuleControlButtons";
-
-type Lesson = {
-    name: string;
-};
-
-type Module = {
-    course: string;
-    name: string;
-    lessons?: Lesson[];
-};
 
 export default function Modules() {
     const { cid } = useParams<{ cid: string }>();
@@ -78,10 +67,10 @@ export default function Modules() {
                                 <ListGroup className="wd-lessons rounded-0">
                                     {module.lessons.map((lesson, idx) => (
                                         <ListGroupItem
-                                            key={`${module.course}:${module.name}:${lesson.name || idx}`}
+                                            key={`${module.course}:${module.name}:${lesson.title || idx}`}
                                             className="wd-lesson p-3 ps-1"
                                         >
-                                            <BsGripVertical className="me-2 fs-3" /> {lesson.name}
+                                            <BsGripVertical className="me-2 fs-3" /> {lesson.title}
                                             <LessonControlButtons />
                                         </ListGroupItem>
                                     ))}

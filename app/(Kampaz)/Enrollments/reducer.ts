@@ -33,6 +33,3 @@ const enrollmentsSlice = createSlice({
 
 export const { enroll, unenroll, toggleEnrollment } = enrollmentsSlice.actions;
 export default enrollmentsSlice.reducer;
-
-export const isEnrolled = (state: any, userId: string, courseId: string) =>
-    state.enrollmentsReducer.enrollments.some((e: Enrollment) => e.user === userId && e.course === courseId);
