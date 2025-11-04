@@ -35,7 +35,7 @@ export default function Dashboard() {
     const courses = useSelector<RootState, Course[]>(
         (s) => s.coursesReducer.courses
     );
-    const currentUser = useSelector<RootState, User>(
+    const currentUser = useSelector<RootState, User | null>(
         (s) => s.accountReducer.currentUser
     );
     const runtimeEnrollments = useSelector<RootState, Enrollment[]>(
@@ -54,10 +54,14 @@ export default function Dashboard() {
         description: "New Description",
     });
 
+    const userId = currentUser?._id ?? null;
+
     const isUserEnrolled = (courseId: string) =>
-        runtimeEnrollments.some(
-            (e) => e.user === currentUser._id && e.course === courseId
-        );
+        userId
+            ? runtimeEnrollments.some(
+                (e) => e.user === userId && e.course === courseId
+            )
+            : false;
 
     const visibleCourses = showAll
         ? courses
@@ -106,7 +110,6 @@ export default function Dashboard() {
             <br />
 
             <FormControl value={course.name} className="mb-2" onChange={onNameChange} />
-            {/* FormControl needs `as="textarea"` to accept `rows` */}
             <FormControl
                 as="textarea"
                 value={course.description}
@@ -155,7 +158,8 @@ export default function Dashboard() {
                                                     className="btn btn-danger ms-2"
                                                     onClick={(event) => {
                                                         event.preventDefault();
-                                                        dispatch(unenroll({ user: currentUser._id, course: c._id }));
+                                                        if (!userId) return;
+                                                        dispatch(unenroll({ user: userId, course: c._id }));
                                                     }}
                                                 >
                                                     Unenroll
@@ -165,7 +169,8 @@ export default function Dashboard() {
                                                     className="btn btn-success ms-2"
                                                     onClick={(event) => {
                                                         event.preventDefault();
-                                                        dispatch(enroll({ user: currentUser._id, course: c._id }));
+                                                        if (!userId) return;
+                                                        dispatch(enroll({ user: userId, course: c._id }));
                                                     }}
                                                 >
                                                     Enroll
