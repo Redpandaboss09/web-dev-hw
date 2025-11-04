@@ -4,7 +4,6 @@ import { addTodo, updateTodo, setTodo } from "./todosReducer";
 import type { RootState, AppDispatch } from "../../store";
 
 interface Todo {
-    id: string;
     title: string;
 }
 
