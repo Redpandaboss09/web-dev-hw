@@ -14,6 +14,7 @@ export default function TodoList() {
                 <ListGroup variant="flush">
                     <TodoForm />
                     {todos.map((todo: any) => (
+                        // eslint-disable-next-line react/jsx-key
                         <TodoItem todo={todo} />
                     ))}
                 </ListGroup>
