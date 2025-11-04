@@ -1,11 +1,17 @@
-"use client"
-import { useSelector, useDispatch } from "react-redux";
+"use client";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store";
+
 export default function HelloRedux() {
-    const { message } = useSelector((state: any) => state.helloReducer);
+    const { message } = useSelector<RootState, { message: string }>(
+        (s) => s.helloReducer
+    );
+
     return (
         <div id="wd-hello-redux">
             <h3>Hello Redux</h3>
-            <h4>{message}</h4> <hr />
+            <h4>{message}</h4>
+            <hr />
         </div>
     );
 }
