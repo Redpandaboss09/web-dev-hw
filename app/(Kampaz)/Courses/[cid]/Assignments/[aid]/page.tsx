@@ -54,9 +54,9 @@ export default function AssignmentEditor() {
         router.push(`/Courses/${encodeURIComponent(String(cid))}/Assignments`);
     };
 
-    const onSave = () => {
+    const onSave = async () => {
         const payload: Assignment = {
-            _id: existing?._id ?? "", // empty allows reducer to generate when using addAssignment
+            _id: existing?._id ?? "",
             title: title.trim() || "Untitled Assignment",
             course: String(cid),
             description,
@@ -67,14 +67,16 @@ export default function AssignmentEditor() {
         };
 
         if (isCreate) {
-            const { _id, ...rest } = payload;
-            dispatch(addAssignment(rest as Omit<Assignment, "_id">));
+            const newAssignment = await client.createAssignmentForCourse(String(cid), payload);
+            dispatch(addAssignment(newAssignment));
         } else {
-            dispatch(updateAssignment(payload));
+            const updated = await client.updateAssignment(payload);
+            dispatch(updateAssignment(updated));
         }
 
         router.push(`/Courses/${encodeURIComponent(String(cid))}/Assignments`);
     };
+
 
     const heading = title?.trim() || "Untitled Assignment";
 

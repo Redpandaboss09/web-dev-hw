@@ -1,4 +1,5 @@
 "use client";
+import * as client from "../client";
 import Link from "next/link";
 import { redirect } from "next/dist/client/components/navigation";
 import { setCurrentUser } from "../reducer";
@@ -32,13 +33,9 @@ export default function Signin() {
         password: "",
     });
 
-    const signin = () => {
-        const users = db.users as unknown as User[]; // type the DB read (no `any`)
-        const user = users.find(
-            (u) =>
-                u.username === credentials.username &&
-                u.password === credentials.password
-        );
+    const signin = async () => {
+        const users = db.users as unknown as User[];
+        const user = await client.signin(credentials);
         if (!user) return;
         dispatch(setCurrentUser(user));
         redirect("/Dashboard");

@@ -8,8 +8,9 @@ import { FaFileAlt, FaCheckCircle, FaTrash } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
-import { deleteAssignment } from "./reducer";
-import { useState } from "react";
+import { deleteAssignment, setAssignments } from "./reducer";
+import {useEffect, useState} from "react";
+import * as client from "../../client";
 
 export default function Assignments() {
     const { cid } = useParams<{ cid: string }>();
@@ -21,6 +22,18 @@ export default function Assignments() {
 
     const [confirmId, setConfirmId] = useState<string | null>(null);
 
+    const onDeleteAssignment = async (assignmentId: string) => {
+        await client.deleteAssignment(assignmentId);
+        dispatch(deleteAssignment(assignmentId));
+    };
+
+    useEffect(() => {
+        const fetch = async () => {
+            const data = await client.fetchAssignmentsForCourse(String(cid));
+            dispatch(setAssignments(data));
+        };
+        fetch();
+    }, [cid]);
     return (
         <div id="wd-assignments" className="container-fluid">
             <Row className="g-4">
@@ -102,8 +115,11 @@ export default function Assignments() {
                     <Button variant="secondary" onClick={() => setConfirmId(null)}>Cancel</Button>
                     <Button
                         variant="danger"
-                        onClick={() => {
-                            if (confirmId) dispatch(deleteAssignment(confirmId));
+                        onClick={async () => {
+                            if (confirmId) {
+                                await client.deleteAssignment(confirmId);
+                                dispatch(deleteAssignment(confirmId));
+                            }
                             setConfirmId(null);
                         }}
                     >

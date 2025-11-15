@@ -51,11 +51,13 @@ const assignmentsSlice = createSlice({
         deleteAssignment: (state, { payload: assignmentId }: PayloadAction<string>) => {
             state.assignments = state.assignments.filter((a) => a._id !== assignmentId);
         },
-        // optional convenience if you want an 'editing' flag like modules:
         editAssignment: (state, { payload: assignmentId }: PayloadAction<string>) => {
             state.assignments = state.assignments.map((a) =>
                 a._id === assignmentId ? { ...a, editing: true } : a
             );
+        },
+        setAssignments: (state, { payload }: PayloadAction<Assignment[]>) => {
+            state.assignments = payload;
         },
     },
 });
@@ -65,6 +67,7 @@ export const {
     updateAssignment,
     deleteAssignment,
     editAssignment,
+    setAssignments,
 } = assignmentsSlice.actions;
 
 export default assignmentsSlice.reducer;
