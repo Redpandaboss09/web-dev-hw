@@ -13,8 +13,8 @@ export default function WorkingWithObjects() {
         description: "Create a NodeJS server",
         course: "WebDev",
     });
-    const ASSIGNMENT_API_URL = `${HTTP_SERVER}/lab5/assignment`
-    const MODULE_API_URL = `${HTTP_SERVER}/lab5/module`;
+    const ASSIGNMENT_API_URL = `${HTTP_SERVER}lab5/assignment`
+    const MODULE_API_URL = `${HTTP_SERVER}lab5/module`;
     return (
         <div id="wd-working-with-objects">
             <h3>Working With Objects</h3>
@@ -78,21 +78,21 @@ export default function WorkingWithObjects() {
             <hr />
             <h4>Retrieving Objects</h4>
             <a id="wd-retrieve-assignments" className="btn btn-primary"
-               href={`${HTTP_SERVER}/lab5/assignment`}>
+               href={`${HTTP_SERVER}lab5/assignment`}>
                 Get Assignment
             </a>
             <a id="wd-retrieve-modules" className="btn btn-primary"
-               href={`${HTTP_SERVER}/lab5/module`}>
+               href={`${HTTP_SERVER}lab5/module`}>
                 Get Module
             </a>
             <hr/>
             <h4>Retrieving Properties</h4>
             <a id="wd-retrieve-assignment-title" className="btn btn-primary"
-               href={`${HTTP_SERVER}/lab5/assignment/title`}>
+               href={`${HTTP_SERVER}lab5/assignment/title`}>
                 Get Assignment Title
             </a>
             <a id="wd-retrieve-module-name" className="btn btn-primary"
-               href={`${HTTP_SERVER}/lab5/module/name}`}>
+               href={`${HTTP_SERVER}lab5/module/name}`}>
                 Get Module Name
             </a>
             <hr/>
